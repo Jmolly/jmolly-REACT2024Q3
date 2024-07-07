@@ -1,35 +1,63 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { Component } from 'react';
+
 import './App.css';
+import { getStarWarsCharacters } from './api/starWarsApi';
+import StarWarsList from './components/StarWarsList';
+import StarWarsSearch from './components/StarWarsSearch';
+import { StarWarsItemType } from './types';
+import ErrorBoundary from './components/ErrorBoundary';
+import ErrorButton from './components/ErrorButton';
 
-function App() {
-  const [count, setCount] = useState(0);
+class App extends Component {
+  state: {
+    starWarsCharacters: StarWarsItemType[];
+    isLoading: boolean;
+  } = {
+    starWarsCharacters: [],
+    isLoading: false,
+  };
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+  async componentDidMount(): Promise<void> {
+    this.setState({ ...this.state, isLoading: true });
+
+    try {
+      const starWarsCharacters = await getStarWarsCharacters();
+
+      this.setState({
+        starWarsCharacters,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  handleSearch = async (search: string) => {
+    this.setState({ ...this.state, isLoading: true });
+
+    try {
+      const newSWCharacters = await getStarWarsCharacters(search);
+
+      this.setState({ starWarsCharacters: newSWCharacters, isLoading: false });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  render() {
+    const { isLoading } = this.state;
+
+    return (
+      <ErrorBoundary>
+        <StarWarsSearch onSearch={this.handleSearch} />
+        {isLoading && <p>Loading...</p>}
+        {!isLoading && (
+          <StarWarsList starWarsCharacters={this.state.starWarsCharacters} />
+        )}
+        <ErrorButton />
+      </ErrorBoundary>
+    );
+  }
 }
 
 export default App;
