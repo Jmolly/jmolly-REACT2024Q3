@@ -8,11 +8,7 @@ class ErrorButton extends Component {
   };
 
   render() {
-
-
-
-
-    // if (this.state.isError) {
+    if (this.state.isError) {
       throw new Error('Cath me if you can');
     }
 
