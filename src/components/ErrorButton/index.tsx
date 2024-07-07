@@ -12,7 +12,11 @@ class ErrorButton extends Component {
       throw new Error('Cath me if you can');
     }
 
-    return <button onClick={this.handleThrowError}>Throw Error</button>;
+    return (
+      <button onClick={this.handleThrowError} style={{ marginTop: '8px' }}>
+        Throw Error
+      </button>
+    );
   }
 }
 

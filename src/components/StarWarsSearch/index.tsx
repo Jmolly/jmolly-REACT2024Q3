@@ -17,12 +17,13 @@ class StarWarsSearch extends Component<StarWarsSearchProps> {
 
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     this.props.onSearch(this.state.search);
 
     localStorage.setItem('searchQuery', this.state.search);
   };
 
-  componentDidMount(): void {
+  componentDidMount() {
     const initialSearch = localStorage.getItem('searchQuery');
 
     if (initialSearch) {
@@ -42,7 +43,7 @@ class StarWarsSearch extends Component<StarWarsSearchProps> {
         onSubmit={this.handleSubmit}
       >
         <input
-          placeholder="Search for the right Pokémon"
+          placeholder="Search"
           value={this.state.search}
           onChange={this.handleChange}
           style={{ marginRight: '8px' }}

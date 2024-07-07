@@ -1,6 +1,5 @@
 import { Component } from 'react';
 
-import './App.css';
 import { getStarWarsCharacters } from './api/starWarsApi';
 import StarWarsList from './components/StarWarsList';
 import StarWarsSearch from './components/StarWarsSearch';
@@ -17,22 +16,7 @@ class App extends Component {
     isLoading: false,
   };
 
-  async componentDidMount(): Promise<void> {
-    this.setState({ ...this.state, isLoading: true });
-
-    try {
-      const starWarsCharacters = await getStarWarsCharacters();
-
-      this.setState({
-        starWarsCharacters,
-        isLoading: false,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  handleSearch = async (search: string) => {
+  findStarWarsCharacters = async (search?: string) => {
     this.setState({ ...this.state, isLoading: true });
 
     try {
@@ -42,6 +26,16 @@ class App extends Component {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  async componentDidMount(): Promise<void> {
+    const initialSearch = localStorage.getItem('searchQuery');
+
+    this.findStarWarsCharacters(initialSearch || '');
+  }
+
+  handleSearch = async (search: string) => {
+    this.findStarWarsCharacters(search);
   };
 
   render() {
